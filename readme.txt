@@ -1,7 +1,7 @@
-1.In the comand line, run as administrator(different computer could have different path) 
+1.In the command line, run as administrator(different computer could have different path) 
 	cd Project\src\main\java
 This helps you go to the file of VideoPlayer.java
-2. In the comand line, you type in the following codes as administrator
+2. In the command line, you type in the following codes as administrator
 	javac -cp D:\csci576\Project\src\main\java;D:\csci576\Project\VLCJ\vlcj-4.7.1\vlcj-4.7.1.jar VideoPlayer.java
 
 	java -cp D:\csci576\Project\src\main\java;D:\csci576\Project\VLCJ\vlcj-4.7.1\vlcj-4.7.1.jar VideoPlayer D:\csci576\Project\src\Slice.mp4
