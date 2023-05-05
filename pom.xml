@@ -19,7 +19,7 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>17.0.1</version>
+            <version>21-ea+5</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -46,5 +46,21 @@
             <artifactId>vlcj</artifactId>
             <version>4.5.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.jcodec</groupId>
+            <artifactId>jcodec</artifactId>
+            <version>0.2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jcodec</groupId>
+            <artifactId>jcodec-javase</artifactId>
+            <version>0.2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jcodec</groupId>
+            <artifactId>jcodec-streaming</artifactId>
+            <version>0.2.3</version>
+        </dependency>
+
     </dependencies>
 </project>
