@@ -31,7 +31,7 @@ public class VideoPlayer extends Application {
 
     public static void main(String[] args) {
         if (args.length == 0) {
-            System.out.println("Usage: VideoPlayer <path_to_result_folder>");
+            System.out.println("Usage: VideoPlayer <path_to_zip_file>");
             System.exit(1);
         }
         try {
@@ -39,15 +39,21 @@ public class VideoPlayer extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        resultFolder = "C:/Users/genac/Project/output";
-        launch(resultFolder);
+        zipFilePath = args[0];
+        launch(args);
+
     }
 
     @Override
     public void start(Stage primaryStage) {
+        // Unzip the zip file
+        Path tempDir = Files.createTempDirectory("videoPlayer");
+        unzipFile(zipFilePath, tempDir.toString());
+
+
         BorderPane root = new BorderPane();
-        // Load videos from the Result folder
-        ObservableList<File> videoFiles = loadVideoFiles(resultFolder);
+        // Load videos from the unzipped folder
+        ObservableList<File> videoFiles = loadVideoFiles(tempDir.toString());
 
         // Create a ListView for the videos
         ListView<File> videoListView = new ListView<>(videoFiles);
@@ -153,7 +159,54 @@ public class VideoPlayer extends Application {
             mediaPlayerArray[0].setAutoPlay(true);
         }
     }
-
+    private void listAllVideoFiles(File directory, List<File> videoFiles, Map<File, Integer> fileLevels, int level) {
+        if (directory.isDirectory()) {
+            File[] files = directory.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.getName().endsWith(".mp4")) {
+                        videoFiles.add(file);
+                        fileLevels.put(file, level);
+                    }
+                    if (file.isDirectory()) {
+                        listAllVideoFiles(file, videoFiles, fileLevels, level + 1);
+                    }
+                }
+            }
+        } else if (directory.getName().endsWith(".mp4")) {
+            videoFiles.add(directory);
+            fileLevels.put(directory, level);
+        }
+    }
+    private void unzipFile(String zipFilePath, String destDir) throws IOException {
+        File dir = new File(destDir);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFilePath));
+        ZipEntry entry = zis.getNextEntry();
+        while (entry != null) {
+            String filePath = destDir + File.separator + entry.getName();
+            if (!entry.isDirectory()) {
+                extractFile(zis, filePath);
+            } else {
+                File subDir = new File(filePath);
+                subDir.mkdirs();
+            }
+            zis.closeEntry();
+            entry = zis.getNextEntry();
+        }
+        zis.close();
+    }
+    private void extractFile(ZipInputStream zis, String filePath) throws IOException {
+        try (FileOutputStream fos = new FileOutputStream(filePath)) {
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = zis.read(buffer)) > 0) {
+                fos.write(buffer, 0, len);
+            }
+        }
+    }
     public static void runPythonScript(String scriptPath, String arg1, String arg2) throws IOException {
         List<String> command = new ArrayList<>();
         command.add("python");
