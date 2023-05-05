@@ -25,9 +25,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class VideoPlayer extends Application {
-    private static String resultFolder;
+    private static String zipFilePath;
 
     public static void main(String[] args) {
         if (args.length == 0) {
@@ -109,6 +111,19 @@ public class VideoPlayer extends Application {
                     .filter(Files::isRegularFile)
                     .map(Path::toFile)
                     .filter(file -> file.getName().endsWith(".mp4"))
+                    .sorted((file1, file2) -> {
+                        String[] parts1 = file1.getName().split(" - ");
+                        String[] parts2 = file2.getName().split(" - ");
+
+                        for (int i = 0; i < Math.min(parts1.length, parts2.length); i++) {
+                            int comparison = parts1[i].compareToIgnoreCase(parts2[i]);
+                            if (comparison != 0) {
+                                return comparison;
+                            }
+                        }
+
+                        return Integer.compare(parts1.length, parts2.length);
+                    })
                     .collect(Collectors.toList());
             videoFiles.addAll(files);
         } catch (IOException e) {
