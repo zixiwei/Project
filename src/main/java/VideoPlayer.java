@@ -17,13 +17,12 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,14 +34,18 @@ public class VideoPlayer extends Application {
             System.out.println("Usage: VideoPlayer <path_to_result_folder>");
             System.exit(1);
         }
-        resultFolder = args[0];
-        launch(args);
+        try {
+            runPythonScript("C:/Users/genac/PycharmProjects/pythonProject6/main.py", args[0], "C:/Users/genac/Project/output");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        resultFolder = "C:/Users/genac/Project/output";
+        launch(resultFolder);
     }
 
     @Override
     public void start(Stage primaryStage) {
         BorderPane root = new BorderPane();
-
         // Load videos from the Result folder
         ObservableList<File> videoFiles = loadVideoFiles(resultFolder);
 
@@ -150,5 +153,34 @@ public class VideoPlayer extends Application {
             mediaPlayerArray[0].setAutoPlay(true);
         }
     }
+
+    public static void runPythonScript(String scriptPath, String arg1, String arg2) throws IOException {
+        List<String> command = new ArrayList<>();
+        command.add("python");
+        command.add(scriptPath);
+        command.add(arg1);
+        command.add(arg2);
+
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        processBuilder.directory(new File("C:/Users/genac/PycharmProjects/pythonProject6/"));
+        processBuilder.redirectErrorStream(true);
+        Process process = processBuilder.start();
+        BufferedReader stdInput
+                = new BufferedReader(new InputStreamReader(
+                process.getInputStream()));
+        String s;
+        while ((s = stdInput.readLine()) != null) {
+            System.out.println(s);
+        }
+
+        // Wait for the process to finish
+        try {
+            int exitCode = process.waitFor();
+            System.out.println("Python script finished with exit code: " + exitCode);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
 
