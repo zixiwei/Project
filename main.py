@@ -65,7 +65,7 @@ for filename in enumerate(os.listdir(path_scene)):
                         path_sub_shot_result = os.path.join(path_shot_result, str(file_name[0] + 1)) + "\\"
                         result_generator(path_sub_shot_result, path_sub_shot, 14, 2)
 
-with zipfile.ZipFile("output", mode='w') as zip_file:
+with zipfile.ZipFile("output.zip", mode='w') as zip_file:
     # Walk through the directory and compress all the files and subdirectories
     for root, dirs, files in os.walk(path_scene):
         for file in files:
